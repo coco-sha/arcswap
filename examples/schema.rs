@@ -3,11 +3,11 @@ use std::fs::create_dir_all;
 
 use cosmwasm_schema::{export_schema, remove_schemas, schema_for};
 
-use amm::msg::{
+use arcswap::msg::{
     ExecuteMsg, InfoResponse, InstantiateMsg, NativeForTokenPriceResponse, QueryMsg,
     TokenForNativePriceResponse,
 };
-use amm::state::Token;
+use arcswap::state::Token;
 use cw20::BalanceResponse;
 
 fn main() {

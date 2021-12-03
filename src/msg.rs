@@ -35,7 +35,7 @@ pub enum ExecuteMsg {
         expiration: Option<Expiration>,
     },
     SwapTokenForToken {
-        output_amm_address: Addr,
+        output_arcswap_address: Addr,
         input_token_amount: Uint128,
         output_min_token: Uint128,
         expiration: Option<Expiration>,

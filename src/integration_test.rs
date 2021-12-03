@@ -15,7 +15,7 @@ fn mock_app() -> App {
     App::new(api, env.block, bank, || Box::new(MockStorage::new()))
 }
 
-pub fn contract_amm() -> Box<dyn Contract<Empty>> {
+pub fn contract_arcswap() -> Box<dyn Contract<Empty>> {
     let contract = ContractWrapper::new(
         crate::contract::execute,
         crate::contract::instantiate,
@@ -40,18 +40,18 @@ fn get_info(router: &App, contract_addr: &Addr) -> InfoResponse {
         .unwrap()
 }
 
-fn create_amm(router: &mut App, owner: &Addr, cash: &Cw20Contract, native_denom: String) -> Addr {
-    // set up amm contract
-    let amm_id = router.store_code(contract_amm());
+fn create_arcswap(router: &mut App, owner: &Addr, cash: &Cw20Contract, native_denom: String) -> Addr {
+    // set up arcswap contract
+    let arcswap_id = router.store_code(contract_arcswap());
     let msg = InstantiateMsg {
         native_denom,
         token_denom: cash.meta(router).unwrap().symbol,
         token_address: cash.addr(),
     };
-    let amm_addr = router
-        .instantiate_contract(amm_id, owner.clone(), &msg, &[], "amm")
+    let arcswap_addr = router
+        .instantiate_contract(arcswap_id, owner.clone(), &msg, &[], "arcswap")
         .unwrap();
-    amm_addr
+    arcswap_addr
 }
 
 // CreateCW20 create new cw20 with given initial balance belonging to owner
@@ -95,7 +95,7 @@ fn bank_balance(router: &mut App, addr: &Addr, denom: String) -> BalanceResponse
 
 #[test]
 // receive cw20 tokens and release upon approval
-fn amm_add_and_remove_liquidity() {
+fn arcswap_add_and_remove_liquidity() {
     let mut router = mock_app();
 
     const NATIVE_TOKEN_DENOM: &str = "juno";
@@ -112,12 +112,12 @@ fn amm_add_and_remove_liquidity() {
         Uint128(5000),
     );
 
-    let amm_addr = create_amm(&mut router, &owner, &cw20_token, NATIVE_TOKEN_DENOM.into());
+    let arcswap_addr = create_arcswap(&mut router, &owner, &cw20_token, NATIVE_TOKEN_DENOM.into());
 
-    assert_ne!(cw20_token.addr(), amm_addr);
+    assert_ne!(cw20_token.addr(), arcswap_addr);
 
     // set up cw20 helpers
-    let amm = Cw20Contract(amm_addr.clone());
+    let arcswap = Cw20Contract(arcswap_addr.clone());
 
     // check initial balances
     let owner_balance = cw20_token.balance(&router, owner.clone()).unwrap();
@@ -125,7 +125,7 @@ fn amm_add_and_remove_liquidity() {
 
     // send tokens to contract address
     let allowance_msg = Cw20ExecuteMsg::IncreaseAllowance {
-        spender: amm_addr.to_string(),
+        spender: arcswap_addr.to_string(),
         amount: Uint128::from(100u128),
         expires: None,
     };
@@ -142,7 +142,7 @@ fn amm_add_and_remove_liquidity() {
     let res = router
         .execute_contract(
             owner.clone(),
-            amm_addr.clone(),
+            arcswap_addr.clone(),
             &add_liquidity_msg,
             &[Coin {
                 denom: NATIVE_TOKEN_DENOM.into(),
@@ -155,14 +155,14 @@ fn amm_add_and_remove_liquidity() {
     // ensure balances updated
     let owner_balance = cw20_token.balance(&router, owner.clone()).unwrap();
     assert_eq!(owner_balance, Uint128(4900));
-    let amm_balance = cw20_token.balance(&router, amm_addr.clone()).unwrap();
-    assert_eq!(amm_balance, Uint128(100));
-    let crust_balance = amm.balance(&router, owner.clone()).unwrap();
+    let arcswap_balance = cw20_token.balance(&router, arcswap_addr.clone()).unwrap();
+    assert_eq!(arcswap_balance, Uint128(100));
+    let crust_balance = arcswap.balance(&router, owner.clone()).unwrap();
     assert_eq!(crust_balance, Uint128(100));
 
     // send tokens to contract address
     let allowance_msg = Cw20ExecuteMsg::IncreaseAllowance {
-        spender: amm_addr.to_string(),
+        spender: arcswap_addr.to_string(),
         amount: Uint128::from(51u128),
         expires: None,
     };
@@ -180,7 +180,7 @@ fn amm_add_and_remove_liquidity() {
     let res = router
         .execute_contract(
             owner.clone(),
-            amm_addr.clone(),
+            arcswap_addr.clone(),
             &add_liquidity_msg,
             &[Coin {
                 denom: NATIVE_TOKEN_DENOM.into(),
@@ -193,9 +193,9 @@ fn amm_add_and_remove_liquidity() {
     // ensure balances updated
     let owner_balance = cw20_token.balance(&router, owner.clone()).unwrap();
     assert_eq!(owner_balance, Uint128(4849));
-    let amm_balance = cw20_token.balance(&router, amm_addr.clone()).unwrap();
-    assert_eq!(amm_balance, Uint128(151));
-    let crust_balance = amm.balance(&router, owner.clone()).unwrap();
+    let arcswap_balance = cw20_token.balance(&router, arcswap_addr.clone()).unwrap();
+    assert_eq!(arcswap_balance, Uint128(151));
+    let crust_balance = arcswap.balance(&router, owner.clone()).unwrap();
     assert_eq!(crust_balance, Uint128(150));
 
     let remove_liquidity_msg = ExecuteMsg::RemoveLiquidity {
@@ -207,7 +207,7 @@ fn amm_add_and_remove_liquidity() {
     let res = router
         .execute_contract(
             owner.clone(),
-            amm_addr.clone(),
+            arcswap_addr.clone(),
             &remove_liquidity_msg,
             &[Coin {
                 denom: NATIVE_TOKEN_DENOM.into(),
@@ -220,9 +220,9 @@ fn amm_add_and_remove_liquidity() {
     // ensure balances updated
     let owner_balance = cw20_token.balance(&router, owner.clone()).unwrap();
     assert_eq!(owner_balance, Uint128(4899));
-    let amm_balance = cw20_token.balance(&router, amm_addr.clone()).unwrap();
-    assert_eq!(amm_balance, Uint128(101));
-    let crust_balance = amm.balance(&router, owner.clone()).unwrap();
+    let arcswap_balance = cw20_token.balance(&router, arcswap_addr.clone()).unwrap();
+    assert_eq!(arcswap_balance, Uint128(101));
+    let crust_balance = arcswap.balance(&router, owner.clone()).unwrap();
     assert_eq!(crust_balance, Uint128(100));
 }
 
@@ -244,14 +244,14 @@ fn swap_tokens_happy_path() {
         Uint128(5000),
     );
 
-    let amm_addr = create_amm(
+    let arcswap_addr = create_arcswap(
         &mut router,
         &owner,
         &cw20_token,
         NATIVE_TOKEN_DENOM.to_string(),
     );
 
-    assert_ne!(cw20_token.addr(), amm_addr);
+    assert_ne!(cw20_token.addr(), arcswap_addr);
 
     // check initial balances
     let owner_balance = cw20_token.balance(&router, owner.clone()).unwrap();
@@ -259,7 +259,7 @@ fn swap_tokens_happy_path() {
 
     // send tokens to contract address
     let allowance_msg = Cw20ExecuteMsg::IncreaseAllowance {
-        spender: amm_addr.to_string(),
+        spender: arcswap_addr.to_string(),
         amount: Uint128::from(100u128),
         expires: None,
     };
@@ -276,7 +276,7 @@ fn swap_tokens_happy_path() {
     let res = router
         .execute_contract(
             owner.clone(),
-            amm_addr.clone(),
+            arcswap_addr.clone(),
             &add_liquidity_msg,
             &[Coin {
                 denom: NATIVE_TOKEN_DENOM.into(),
@@ -286,7 +286,7 @@ fn swap_tokens_happy_path() {
         .unwrap();
     println!("{:?}", res.attributes);
 
-    let info = get_info(&router, &amm_addr);
+    let info = get_info(&router, &arcswap_addr);
     assert_eq!(info.native_reserve, Uint128(100));
     assert_eq!(info.token_reserve, Uint128(100));
 
@@ -301,7 +301,7 @@ fn swap_tokens_happy_path() {
     let res = router
         .execute_contract(
             buyer.clone(),
-            amm_addr.clone(),
+            arcswap_addr.clone(),
             &add_liquidity_msg,
             &[Coin {
                 denom: NATIVE_TOKEN_DENOM.into(),
@@ -311,7 +311,7 @@ fn swap_tokens_happy_path() {
         .unwrap();
     println!("{:?}", res.attributes);
 
-    let info = get_info(&router, &amm_addr);
+    let info = get_info(&router, &arcswap_addr);
     assert_eq!(info.native_reserve, Uint128(110));
     assert_eq!(info.token_reserve, Uint128(91));
 
@@ -331,7 +331,7 @@ fn swap_tokens_happy_path() {
     let res = router
         .execute_contract(
             buyer.clone(),
-            amm_addr.clone(),
+            arcswap_addr.clone(),
             &swap_msg,
             &[Coin {
                 denom: NATIVE_TOKEN_DENOM.into(),
@@ -341,7 +341,7 @@ fn swap_tokens_happy_path() {
         .unwrap();
     println!("{:?}", res.attributes);
 
-    let info = get_info(&router, &amm_addr);
+    let info = get_info(&router, &arcswap_addr);
     assert_eq!(info.native_reserve, Uint128(120));
     assert_eq!(info.token_reserve, Uint128(84));
 
@@ -358,7 +358,7 @@ fn swap_tokens_happy_path() {
 
     // send tokens to contract address
     let allowance_msg = Cw20ExecuteMsg::IncreaseAllowance {
-        spender: amm_addr.to_string(),
+        spender: arcswap_addr.to_string(),
         amount: Uint128(16),
         expires: None,
     };
@@ -373,11 +373,11 @@ fn swap_tokens_happy_path() {
         expiration: None,
     };
     let res = router
-        .execute_contract(buyer.clone(), amm_addr.clone(), &swap_msg, &vec![])
+        .execute_contract(buyer.clone(), arcswap_addr.clone(), &swap_msg, &vec![])
         .unwrap();
     println!("{:?}", res.attributes);
 
-    let info = get_info(&router, &amm_addr);
+    let info = get_info(&router, &arcswap_addr);
     assert_eq!(info.native_reserve, Uint128(101));
     assert_eq!(info.token_reserve, Uint128(100));
 
@@ -402,7 +402,7 @@ fn swap_tokens_happy_path() {
     let res = router
         .execute_contract(
             buyer.clone(),
-            amm_addr.clone(),
+            arcswap_addr.clone(),
             &swap_msg,
             &[Coin {
                 denom: NATIVE_TOKEN_DENOM.into(),
@@ -412,7 +412,7 @@ fn swap_tokens_happy_path() {
         .unwrap();
     println!("{:?}", res.attributes);
 
-    let info = get_info(&router, &amm_addr);
+    let info = get_info(&router, &arcswap_addr);
     assert_eq!(info.native_reserve, Uint128(111));
     assert_eq!(info.token_reserve, Uint128(92));
 
@@ -450,12 +450,12 @@ fn token_to_token_swap() {
         Uint128(5000),
     );
 
-    let amm1 = create_amm(&mut router, &owner, &token1, NATIVE_TOKEN_DENOM.to_string());
-    let amm2 = create_amm(&mut router, &owner, &token2, NATIVE_TOKEN_DENOM.to_string());
+    let arcswap1 = create_arcswap(&mut router, &owner, &token1, NATIVE_TOKEN_DENOM.to_string());
+    let arcswap2 = create_arcswap(&mut router, &owner, &token2, NATIVE_TOKEN_DENOM.to_string());
 
     // Add initial liquidity to both pools
     let allowance_msg = Cw20ExecuteMsg::IncreaseAllowance {
-        spender: amm1.to_string(),
+        spender: arcswap1.to_string(),
         amount: Uint128(100),
         expires: None,
     };
@@ -472,7 +472,7 @@ fn token_to_token_swap() {
     router
         .execute_contract(
             owner.clone(),
-            amm1.clone(),
+            arcswap1.clone(),
             &add_liquidity_msg,
             &[Coin {
                 denom: NATIVE_TOKEN_DENOM.into(),
@@ -482,7 +482,7 @@ fn token_to_token_swap() {
         .unwrap();
 
     let allowance_msg = Cw20ExecuteMsg::IncreaseAllowance {
-        spender: amm2.to_string(),
+        spender: arcswap2.to_string(),
         amount: Uint128(100),
         expires: None,
     };
@@ -499,7 +499,7 @@ fn token_to_token_swap() {
     router
         .execute_contract(
             owner.clone(),
-            amm2.clone(),
+            arcswap2.clone(),
             &add_liquidity_msg,
             &[Coin {
                 denom: NATIVE_TOKEN_DENOM.into(),
@@ -510,7 +510,7 @@ fn token_to_token_swap() {
 
     // Swap token1 for token2
     let allowance_msg = Cw20ExecuteMsg::IncreaseAllowance {
-        spender: amm1.to_string(),
+        spender: arcswap1.to_string(),
         amount: Uint128(10),
         expires: None,
     };
@@ -520,13 +520,13 @@ fn token_to_token_swap() {
     println!("{:?}", res.attributes);
 
     let swap_msg = ExecuteMsg::SwapTokenForToken {
-        output_amm_address: amm2.clone(),
+        output_arcswap_address: arcswap2.clone(),
         input_token_amount: Uint128(10),
         output_min_token: Uint128(8),
         expiration: None,
     };
     let res = router
-        .execute_contract(owner.clone(), amm1.clone(), &swap_msg, &[])
+        .execute_contract(owner.clone(), arcswap1.clone(), &swap_msg, &[])
         .unwrap();
 
     println!("{:?}", res.attributes);
@@ -538,15 +538,15 @@ fn token_to_token_swap() {
     let token2_balance = token2.balance(&router, owner.clone()).unwrap();
     assert_eq!(token2_balance, Uint128(4908));
 
-    let amm1_native_balance = bank_balance(&mut router, &amm1, NATIVE_TOKEN_DENOM.to_string());
-    assert_eq!(amm1_native_balance.amount.amount, Uint128(91));
+    let arcswap1_native_balance = bank_balance(&mut router, &arcswap1, NATIVE_TOKEN_DENOM.to_string());
+    assert_eq!(arcswap1_native_balance.amount.amount, Uint128(91));
 
-    let amm2_native_balance = bank_balance(&mut router, &amm2, NATIVE_TOKEN_DENOM.to_string());
-    assert_eq!(amm2_native_balance.amount.amount, Uint128(109));
+    let arcswap2_native_balance = bank_balance(&mut router, &arcswap2, NATIVE_TOKEN_DENOM.to_string());
+    assert_eq!(arcswap2_native_balance.amount.amount, Uint128(109));
 
     // Swap token2 for token1
     let allowance_msg = Cw20ExecuteMsg::IncreaseAllowance {
-        spender: amm2.to_string(),
+        spender: arcswap2.to_string(),
         amount: Uint128(10),
         expires: None,
     };
@@ -556,13 +556,13 @@ fn token_to_token_swap() {
     println!("{:?}", res.attributes);
 
     let swap_msg = ExecuteMsg::SwapTokenForToken {
-        output_amm_address: amm1.clone(),
+        output_arcswap_address: arcswap1.clone(),
         input_token_amount: Uint128(10),
         output_min_token: Uint128(1),
         expiration: None,
     };
     let res = router
-        .execute_contract(owner.clone(), amm2.clone(), &swap_msg, &[])
+        .execute_contract(owner.clone(), arcswap2.clone(), &swap_msg, &[])
         .unwrap();
 
     println!("{:?}", res.attributes);
@@ -574,20 +574,20 @@ fn token_to_token_swap() {
     let token2_balance = token2.balance(&router, owner.clone()).unwrap();
     assert_eq!(token2_balance, Uint128(4898));
 
-    let amm1_native_balance = bank_balance(&mut router, &amm1, NATIVE_TOKEN_DENOM.to_string());
-    assert_eq!(amm1_native_balance.amount.amount, Uint128(101));
+    let arcswap1_native_balance = bank_balance(&mut router, &arcswap1, NATIVE_TOKEN_DENOM.to_string());
+    assert_eq!(arcswap1_native_balance.amount.amount, Uint128(101));
 
-    let amm2_native_balance = bank_balance(&mut router, &amm2, NATIVE_TOKEN_DENOM.to_string());
-    assert_eq!(amm2_native_balance.amount.amount, Uint128(99));
+    let arcswap2_native_balance = bank_balance(&mut router, &arcswap2, NATIVE_TOKEN_DENOM.to_string());
+    assert_eq!(arcswap2_native_balance.amount.amount, Uint128(99));
 
     // assert internal state is consistent
-    let info_amm1 = get_info(&router, &amm1);
-    let token1_balance = token1.balance(&router, amm1.clone()).unwrap();
-    assert_eq!(info_amm1.token_reserve, token1_balance);
-    assert_eq!(info_amm1.native_reserve, amm1_native_balance.amount.amount);
+    let info_arcswap1 = get_info(&router, &arcswap1);
+    let token1_balance = token1.balance(&router, arcswap1.clone()).unwrap();
+    assert_eq!(info_arcswap1.token_reserve, token1_balance);
+    assert_eq!(info_arcswap1.native_reserve, arcswap1_native_balance.amount.amount);
 
-    let info_amm2 = get_info(&router, &amm2);
-    let token2_balance = token2.balance(&router, amm2.clone()).unwrap();
-    assert_eq!(info_amm2.token_reserve, token2_balance);
-    assert_eq!(info_amm2.native_reserve, amm2_native_balance.amount.amount);
+    let info_arcswap2 = get_info(&router, &arcswap2);
+    let token2_balance = token2.balance(&router, arcswap2.clone()).unwrap();
+    assert_eq!(info_arcswap2.token_reserve, token2_balance);
+    assert_eq!(info_arcswap2.native_reserve, arcswap2_native_balance.amount.amount);
 }

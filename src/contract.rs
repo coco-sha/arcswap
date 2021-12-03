@@ -110,7 +110,7 @@ pub fn execute(
             expiration,
         ),
         ExecuteMsg::SwapTokenForToken {
-            output_amm_address,
+            output_arcswap_address,
             input_token_amount,
             output_min_token,
             expiration,
@@ -118,7 +118,7 @@ pub fn execute(
             deps,
             info,
             _env,
-            output_amm_address,
+            output_arcswap_address,
             input_token_amount,
             output_min_token,
             expiration,
@@ -555,7 +555,7 @@ pub fn execute_token_for_token_swap(
     deps: DepsMut,
     info: MessageInfo,
     _env: Env,
-    output_amm_address: Addr,
+    output_arcswap_address: Addr,
     input_token_amount: Uint128,
     output_min_token: Uint128,
     expiration: Option<Expiration>,
@@ -580,8 +580,8 @@ pub fn execute_token_for_token_swap(
         expiration,
     };
 
-    let swap_with_output_amm_msg: CosmosMsg = WasmMsg::Execute {
-        contract_addr: output_amm_address.into(),
+    let swap_with_output_arcswap_msg: CosmosMsg = WasmMsg::Execute {
+        contract_addr: output_arcswap_address.into(),
         msg: to_binary(&swap_msg)?,
         send: vec![Coin {
             denom: token1.denom,
@@ -607,7 +607,7 @@ pub fn execute_token_for_token_swap(
     })?;
 
     Ok(Response {
-        messages: vec![cw20_transfer_cosmos_msg, swap_with_output_amm_msg],
+        messages: vec![cw20_transfer_cosmos_msg, swap_with_output_arcswap_msg],
         submessages: vec![],
         attributes: vec![
             attr("input_token_amount", input_token_amount),

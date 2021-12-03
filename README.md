@@ -1,6 +1,6 @@
 # WasmSwap
 
-This contract is an automatic market maker (AMM) heavily inspired by Uniswap v1 for the cosmwasm smart contract engine.
+This contract is an automatic market maker (arcswap) heavily inspired by Uniswap v1 for the cosmwasm smart contract engine.
 
 This project is currently in beta and is unaudited so please use at your own risk.
 
