@@ -46,8 +46,8 @@ pub fn instantiate(
         _env.clone(),
         info,
         cw20_base::msg::InstantiateMsg {
-            name: "CRUST_LIQUIDITY_TOKEN".into(),
-            symbol: "CRUST".into(),
+            name: "ARC_LIQUIDITY_TOKEN".into(),
+            symbol: "ARC".into(),
             decimals: 18,
             initial_balances: vec![],
             mint: Some(MinterResponse {

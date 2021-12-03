@@ -157,8 +157,8 @@ fn arcswap_add_and_remove_liquidity() {
     assert_eq!(owner_balance, Uint128(4900));
     let arcswap_balance = cw20_token.balance(&router, arcswap_addr.clone()).unwrap();
     assert_eq!(arcswap_balance, Uint128(100));
-    let crust_balance = arcswap.balance(&router, owner.clone()).unwrap();
-    assert_eq!(crust_balance, Uint128(100));
+    let arc_balance = arcswap.balance(&router, owner.clone()).unwrap();
+    assert_eq!(arc_balance, Uint128(100));
 
     // send tokens to contract address
     let allowance_msg = Cw20ExecuteMsg::IncreaseAllowance {
@@ -195,8 +195,8 @@ fn arcswap_add_and_remove_liquidity() {
     assert_eq!(owner_balance, Uint128(4849));
     let arcswap_balance = cw20_token.balance(&router, arcswap_addr.clone()).unwrap();
     assert_eq!(arcswap_balance, Uint128(151));
-    let crust_balance = arcswap.balance(&router, owner.clone()).unwrap();
-    assert_eq!(crust_balance, Uint128(150));
+    let arc_balance = arcswap.balance(&router, owner.clone()).unwrap();
+    assert_eq!(arc_balance, Uint128(150));
 
     let remove_liquidity_msg = ExecuteMsg::RemoveLiquidity {
         amount: Uint128(50),
@@ -222,8 +222,8 @@ fn arcswap_add_and_remove_liquidity() {
     assert_eq!(owner_balance, Uint128(4899));
     let arcswap_balance = cw20_token.balance(&router, arcswap_addr.clone()).unwrap();
     assert_eq!(arcswap_balance, Uint128(101));
-    let crust_balance = arcswap.balance(&router, owner.clone()).unwrap();
-    assert_eq!(crust_balance, Uint128(100));
+    let arc_balance = arcswap.balance(&router, owner.clone()).unwrap();
+    assert_eq!(arc_balance, Uint128(100));
 }
 
 #[test]
