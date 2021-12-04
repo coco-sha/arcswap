@@ -265,15 +265,18 @@ pub fn execute_add_liquidity(
         liquidity_amount,
     )?;
 
-    Ok(Response {
-        messages: vec![cw20_transfer_cosmos_msg],
-        attributes: vec![
-            attr("native_amount", info.funds[0].clone().amount),
-            attr("token_amount", token_amount),
-            attr("liquidity_received", liquidity_amount),
-        ],
-        data: None,
-    })
+    Ok(Response::new().add_messages(vec![cw20_transfer_cosmos_msg])
+    .add_attributes(vec![("native_amount", info.funds[0].clone().amount),
+    ("token_amount", token_amount), ("liquidity_received", liquidity_amount)]))
+    // Ok(Response {
+    //     messages: vec![cw20_transfer_cosmos_msg],
+    //     attributes: vec![
+    //         attr("native_amount", info.funds[0].clone().amount),
+    //         attr("token_amount", token_amount),
+    //         attr("liquidity_received", liquidity_amount),
+    //     ],
+    //     data: None,
+    // })
 }
 
 fn check_denom(actual_denom: &str, given_denom: &str) -> Result<(), ContractError> {
@@ -318,7 +321,7 @@ fn get_cw20_transfer_from_msg(
     let exec_cw20_transfer = WasmMsg::Execute {
         contract_addr: token_addr.into(),
         msg: to_binary(&transfer_cw20_msg)?,
-        send: vec![],
+        funds: vec![],
     };
     let cw20_transfer_cosmos_msg: CosmosMsg = exec_cw20_transfer.into();
     Ok(cw20_transfer_cosmos_msg)
@@ -397,16 +400,18 @@ pub fn execute_remove_liquidity(
     )?;
 
     execute_burn(deps, _env, info, amount)?;
-
-    Ok(Response {
-        messages: vec![transfer_bank_cosmos_msg, cw20_transfer_cosmos_msg],
-        attributes: vec![
-            attr("liquidity_burned", amount),
-            attr("native_returned", native_amount),
-            attr("token_returned", token_amount),
-        ],
-        data: None,
-    })
+    Ok(Response::new().add_messages(vec![transfer_bank_cosmos_msg, cw20_transfer_cosmos_msg])
+    .add_attributes(vec![("liquidity_burned", amount),
+    ("native_returned", native_amount), ("token_returned", token_amount)]))
+    // Ok(Response {
+    //     messages: vec![transfer_bank_cosmos_msg, cw20_transfer_cosmos_msg],
+    //     attributes: vec![
+    //         attr("liquidity_burned", amount),
+    //         attr("native_returned", native_amount),
+    //         attr("token_returned", token_amount),
+    //     ],
+    //     data: None,
+    // })
 }
 
 fn get_cw20_transfer_to_msg(
@@ -422,7 +427,7 @@ fn get_cw20_transfer_to_msg(
     let exec_cw20_transfer = WasmMsg::Execute {
         contract_addr: token_addr.into(),
         msg: to_binary(&transfer_cw20_msg)?,
-        send: vec![],
+        funds: vec![],
     };
     let cw20_transfer_cosmos_msg: CosmosMsg = exec_cw20_transfer.into();
     Ok(cw20_transfer_cosmos_msg)
@@ -537,15 +542,17 @@ pub fn execute_swap(
             Ok(output_token)
         },
     )?;
-
-    Ok(Response {
-        messages: transfer_msgs,
-        attributes: vec![
-            attr("native_sold", input_amount),
-            attr("token_bought", token_bought),
-        ],
-        data: None,
-    })
+    Ok(Response::new().add_messages(transfer_msgs)
+    .add_attributes(vec![("native_sold", input_amount),
+    ("token_bought", token_bought)]))
+    // Ok(Response {
+    //     messages: transfer_msgs,
+    //     attributes: vec![
+    //         attr("native_sold", input_amount),
+    //         attr("token_bought", token_bought),
+    //     ],
+    //     data: None,
+    // })
 }
 
 pub fn execute_token_for_token_swap(
@@ -580,7 +587,7 @@ pub fn execute_token_for_token_swap(
     let swap_with_output_arcswap_msg: CosmosMsg = WasmMsg::Execute {
         contract_addr: output_arcswap_address.into(),
         msg: to_binary(&swap_msg)?,
-        send: vec![Coin {
+        funds: vec![Coin {
             denom: token1.denom,
             amount: native_to_transfer,
         }],
@@ -603,14 +610,17 @@ pub fn execute_token_for_token_swap(
         Ok(token2)
     })?;
 
-    Ok(Response {
-        messages: vec![cw20_transfer_cosmos_msg, swap_with_output_arcswap_msg],
-        attributes: vec![
-            attr("input_token_amount", input_token_amount),
-            attr("native_transferred", native_to_transfer),
-        ],
-        data: None,
-    })
+    Ok(Response::new().add_messages(vec![cw20_transfer_cosmos_msg, swap_with_output_arcswap_msg])
+    .add_attributes(vec![("input_token_amount", input_token_amount),
+    ("native_transferred", native_to_transfer)]))
+    // Ok(Response {
+    //     messages: vec![cw20_transfer_cosmos_msg, swap_with_output_arcswap_msg],
+    //     attributes: vec![
+    //         attr("input_token_amount", input_token_amount),
+    //         attr("native_transferred", native_to_transfer),
+    //     ],
+    //     data: None,
+    // })
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
