@@ -26,7 +26,7 @@ pub fn instantiate(
     msg: InstantiateMsg,
 ) -> Result<Response, ContractError> {
     let token1 = Token {
-        reserve: Uint128(0),
+        reserve: Uint128::from(0u128),
         denom: msg.native_denom,
         address: None,
     };
@@ -36,7 +36,7 @@ pub fn instantiate(
     let token2 = Token {
         address: Some(msg.token_address),
         denom: msg.token_denom,
-        reserve: Uint128(0),
+        reserve: Uint128::from(0u128),
     };
 
     TOKEN2.save(deps.storage, &token2)?;
@@ -184,7 +184,7 @@ fn get_liquidity_amount(
     liquidity_supply: Uint128,
     native_reserve: Uint128,
 ) -> Result<Uint128, ContractError> {
-    if liquidity_supply == Uint128(0) {
+    if liquidity_supply == Uint128::from(0u128) {
         Ok(native_amount)
     } else {
         Ok(native_amount
@@ -202,7 +202,7 @@ fn get_token_amount(
     token_reserve: Uint128,
     native_reserve: Uint128,
 ) -> Result<Uint128, StdError> {
-    if liquidity_supply == Uint128(0) {
+    if liquidity_supply == Uint128::from(0u128) {
         Ok(max_token)
     } else {
         Ok(native_amount
@@ -210,7 +210,7 @@ fn get_token_amount(
             .map_err(StdError::overflow)?
             .checked_div(native_reserve)
             .map_err(StdError::divide_by_zero)?
-            .checked_add(Uint128(1))
+            .checked_add(Uint128::from(1u128))
             .map_err(StdError::overflow)?)
     }
 }
@@ -474,18 +474,18 @@ fn get_input_price(
     input_reserve: Uint128,
     output_reserve: Uint128,
 ) -> Result<Uint128, ContractError> {
-    if input_reserve == Uint128(0) || output_reserve == Uint128(0) {
+    if input_reserve == Uint128::from(0u128) || output_reserve == Uint128::from(0u128) {
         return Err(ContractError::NoLiquidityError {});
     };
 
     let input_amount_with_fee = input_amount
-        .checked_mul(Uint128(997))
+        .checked_mul(Uint128::from(997u128),)
         .map_err(StdError::overflow)?;
     let numerator = input_amount_with_fee
         .checked_mul(output_reserve)
         .map_err(StdError::overflow)?;
     let denominator = input_reserve
-        .checked_mul(Uint128(1000))
+        .checked_mul(Uint128::from(1000u128),)
         .map_err(StdError::overflow)?
         .checked_add(input_amount_with_fee)
         .map_err(StdError::overflow)?;
