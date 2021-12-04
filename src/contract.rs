@@ -1,5 +1,5 @@
 use cosmwasm_std::{
-    attr, entry_point, to_binary, Addr, Binary, BlockInfo, Coin, CosmosMsg, Deps, DepsMut, Env,
+    entry_point, to_binary, Addr, Binary, BlockInfo, Coin, CosmosMsg, Deps, DepsMut, Env,
     MessageInfo, Response, StdError, StdResult, Uint128, WasmMsg,
 };
 use cw20::{Cw20ExecuteMsg, Expiration, MinterResponse};
@@ -40,7 +40,29 @@ pub fn instantiate(
     };
 
     TOKEN2.save(deps.storage, &token2)?;
-
+    // Ok(Response::new().add_submessage(SubMsg {
+    //     // Create LP token
+    //     msg: WasmMsg::Instantiate {
+    //         admin: None,
+    //         code_id: msg.token_code_id,
+    //         msg: to_binary(&TokenInstantiateMsg {
+    //             name: "arcswap liquidity token".to_string(),
+    //             symbol: "uLP".to_string(),
+    //             decimals: 6,
+    //             initial_balances: vec![],
+    //             mint: Some(MinterResponse {
+    //                 minter: env.contract.address.to_string(),
+    //                 cap: None,
+    //             }),
+    //         })?,
+    //         funds: vec![],
+    //         label: "".to_string(),
+    //     }
+    //     .into(),
+    //     gas_limit: None,
+    //     id: INSTANTIATE_REPLY_ID,
+    //     reply_on: ReplyOn::Success,
+    // }))
     cw20_instantiate(
         deps,
         _env.clone(),
@@ -54,6 +76,7 @@ pub fn instantiate(
                 minter: _env.contract.address.into(),
                 cap: None,
             }),
+            marketing: None
         },
     )?;
 
