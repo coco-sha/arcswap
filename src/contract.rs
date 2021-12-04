@@ -267,7 +267,6 @@ pub fn execute_add_liquidity(
 
     Ok(Response {
         messages: vec![cw20_transfer_cosmos_msg],
-        submessages: vec![],
         attributes: vec![
             attr("native_amount", info.funds[0].clone().amount),
             attr("token_amount", token_amount),
@@ -401,7 +400,6 @@ pub fn execute_remove_liquidity(
 
     Ok(Response {
         messages: vec![transfer_bank_cosmos_msg, cw20_transfer_cosmos_msg],
-        submessages: vec![],
         attributes: vec![
             attr("liquidity_burned", amount),
             attr("native_returned", native_amount),
@@ -542,7 +540,6 @@ pub fn execute_swap(
 
     Ok(Response {
         messages: transfer_msgs,
-        submessages: vec![],
         attributes: vec![
             attr("native_sold", input_amount),
             attr("token_bought", token_bought),
@@ -608,7 +605,6 @@ pub fn execute_token_for_token_swap(
 
     Ok(Response {
         messages: vec![cw20_transfer_cosmos_msg, swap_with_output_arcswap_msg],
-        submessages: vec![],
         attributes: vec![
             attr("input_token_amount", input_token_amount),
             attr("native_transferred", native_to_transfer),

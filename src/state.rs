@@ -6,8 +6,8 @@ use cw_storage_plus::Item;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Token {
-    pub address: Option<Addr>,
     pub reserve: Uint128,
+    pub address: Option<Addr>,
     pub denom: String,
 }
 
