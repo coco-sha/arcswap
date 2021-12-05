@@ -1,12 +1,23 @@
-# Archway Network Starter Pack
+# Arcswap
 
-This is a template to build smart contracts in Rust to run inside a
-[Cosmos SDK](https://github.com/cosmos/cosmos-sdk) module on all chains that enable it.
-To understand the framework better, please read the overview in the
-[archway repo](https://github.com/archway-network/archway/blob/main/README.md),
-and dig into the [archway docs](https://docs.archway.io).
+This contract is an automatic market maker (AMM) heavily inspired by Uniswap v1 for the cosmwasm smart contract engine.
 
-The below instructions assume you understand the theory and just want to get coding.
+This project is currently in beta and is unaudited so please use at your own risk.
+
+This contract allows you to swap native cosmos coins for cw20 tokens. Liquidity providers can add liquidity to the market and receive a 0.03% fee on every transaction.
+
+# Deployments
+
+- uco token: `archway1zwv6feuzhy6a9wekh96cd57lsarmqlwxn054te`
+- uco/uconst pair pool contract: `archway1unyuj8qnmygvzuex3dwmg9yzt9alhvye2canzt`
+
+# Usage
+
+The following instructions are written for the constantine-1 testnet.
+
+## Deploy
+``
+archwayd tx wasm instantiate 3 '{"native_denom": "<native_denom>", "token_address":"<cw20_contract_address>", "token_denom": "<token_denom>"}' --from <key>  --chain-id="constantine-1"
 
 ## Creating a new repo from template
 

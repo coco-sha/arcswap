@@ -54,8 +54,21 @@
     "archwayd": {
       "docker": true
     },
-    "deployments": []
+    "deployments": [
+      {
+        "type": "instatiate",
+        "address": "archway1unyuj8qnmygvzuex3dwmg9yzt9alhvye2canzt",
+        "chainId": "constantine-1",
+        "data": "{\"height\":\"3360\",\"txhash\":\"F910B6EA29CFBE7D38A7C0EAA4D1F865607C55A3FECEE9EFA3ACA0195ACF4743\",\"data\":\"0A3F0A0B696E7374616E746961746512300A2E6172636877617931756E79756A38716E6D7967767A7565783364776D6739797A7439616C687679653263616E7A74\",\"raw_log\":\"[{\\\"events\\\":[{\\\"type\\\":\\\"instantiate\\\",\\\"attributes\\\":[{\\\"key\\\":\\\"_contract_address\\\",\\\"value\\\":\\\"archway1unyuj8qnmygvzuex3dwmg9yzt9alhvye2canzt\\\"},{\\\"key\\\":\\\"code_id\\\",\\\"value\\\":\\\"3\\\"}]},{\\\"type\\\":\\\"message\\\",\\\"attributes\\\":[{\\\"key\\\":\\\"action\\\",\\\"value\\\":\\\"instantiate\\\"},{\\\"key\\\":\\\"module\\\",\\\"value\\\":\\\"wasm\\\"},{\\\"key\\\":\\\"sender\\\",\\\"value\\\":\\\"archway10zq3c4zk8fhc6yzf9netgdcwfu0q2777gtlx6q\\\"}]}]}]\",\"logs\":[{\"events\":[{\"type\":\"instantiate\",\"attributes\":[{\"key\":\"_contract_address\",\"value\":\"archway1unyuj8qnmygvzuex3dwmg9yzt9alhvye2canzt\"},{\"key\":\"code_id\",\"value\":\"3\"}]},{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"instantiate\"},{\"key\":\"module\",\"value\":\"wasm\"},{\"key\":\"sender\",\"value\":\"archway10zq3c4zk8fhc6yzf9netgdcwfu0q2777gtlx6q\"}]}]}],\"gas_wanted\":\"192173\",\"gas_used\":\"159126\"}"
+      },
+      {
+        "type": "create",
+        "codeId": "3",
+        "chainId": "constantine-1",
+        "data": "{\"height\":\"2883\",\"txhash\":\"9EA5378F43F047D154B6D27EFFD1A5C398502A83DAA3FEC8FA740FE2524EF9E0\",\"data\":\"0A100A0A73746F72652D636F646512020803\",\"raw_log\":\"[{\\\"events\\\":[{\\\"type\\\":\\\"message\\\",\\\"attributes\\\":[{\\\"key\\\":\\\"action\\\",\\\"value\\\":\\\"store-code\\\"},{\\\"key\\\":\\\"module\\\",\\\"value\\\":\\\"wasm\\\"},{\\\"key\\\":\\\"sender\\\",\\\"value\\\":\\\"archway10zq3c4zk8fhc6yzf9netgdcwfu0q2777gtlx6q\\\"}]},{\\\"type\\\":\\\"store_code\\\",\\\"attributes\\\":[{\\\"key\\\":\\\"code_id\\\",\\\"value\\\":\\\"3\\\"}]}]}]\",\"logs\":[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"store-code\"},{\"key\":\"module\",\"value\":\"wasm\"},{\"key\":\"sender\",\"value\":\"archway10zq3c4zk8fhc6yzf9netgdcwfu0q2777gtlx6q\"}]},{\"type\":\"store_code\",\"attributes\":[{\"key\":\"code_id\",\"value\":\"3\"}]}]}],\"gas_wanted\":\"1672626\",\"gas_used\":\"1299893\"}"
+      }
+    ]
   },
-  "path": "/home/ay/project",
+  "path": "/home/ay/archway/arcswap",
   "type": "Increment"
 }
