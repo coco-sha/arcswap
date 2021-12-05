@@ -16,8 +16,18 @@ This contract allows you to swap native cosmos coins for cw20 tokens. Liquidity 
 The following instructions are written for the constantine-1 testnet.
 
 ## Deploy
-``
+```
 archwayd tx wasm instantiate 3 '{"native_denom": "<native_denom>", "token_address":"<cw20_contract_address>", "token_denom": "<token_denom>"}' --from <key>  --chain-id="constantine-1"
+```
+
+## Add Liquidity
+This message adds liquidity to the pool and give the caller proportional ownership of pool funds. Funds need to be deposited at the current ratio of the pools reserves, ie if the pool currently has 100 native tokens and 300 cw20 tokens the caller needs to deposit at a ratio of 1 to 3. Max token should be set a little higher than expected in case there are any changes in the pool reserves.
+```
+archwayd tx wasm execute archway1zwv6feuzhy6a9wekh96cd57lsarmqlwxn054te '{"increase_allowance":{"amount":"1000000","spender":"archway1unyuj8qnmygvzuex3dwmg9yzt9alhvye2canzt"}}' --from Coco --node "https://rpc.constantine-1.archway.tech:443" --chain-id constantine-1
+```
+```
+archwayd tx wasm execute archway1unyuj8qnmygvzuex3dwmg9yzt9alhvye2canzt '{"add_liquidity":{"max_token":"1000","min_liquidity":"0"}}'  --amount "100uconst" --from Coco --node "https://rpc.constantine-1.archway.tech:443/" --chain-id constantine-1
+```
 
 ## Creating a new repo from template
 
