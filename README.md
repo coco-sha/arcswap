@@ -20,6 +20,13 @@ The following instructions are written for the constantine-1 testnet.
 archwayd tx wasm instantiate 3 '{"native_denom": "<native_denom>", "token_address":"<cw20_contract_address>", "token_denom": "<token_denom>"}' --from <key>  --chain-id="constantine-1"
 ```
 
+## Swap Native for token
+
+This swaps the native token for the cw20 token. Use the price query below to estimate the price before executing this message. min_token is used to set limit on acceptable price for the swap.
+```
+archwayd tx wasm execute archway1unyuj8qnmygvzuex3dwmg9yzt9alhvye2canzt '{"swap_native_for_token_to":{"min_token":"0", "recipient": "archway10zq3c4zk8fhc6yzf9netgdcwfu0q2777gtlx6q"}}'  --amount "2uconst" --from Coco --node "https://rpc.constantine-1.archway.tech:443" --chain-id constantine-1
+```
+
 ## Add Liquidity
 This message adds liquidity to the pool and give the caller proportional ownership of pool funds. Funds need to be deposited at the current ratio of the pools reserves, ie if the pool currently has 100 native tokens and 300 cw20 tokens the caller needs to deposit at a ratio of 1 to 3. Max token should be set a little higher than expected in case there are any changes in the pool reserves.
 ```
@@ -27,6 +34,12 @@ archwayd tx wasm execute archway1zwv6feuzhy6a9wekh96cd57lsarmqlwxn054te '{"incre
 ```
 ```
 archwayd tx wasm execute archway1unyuj8qnmygvzuex3dwmg9yzt9alhvye2canzt '{"add_liquidity":{"max_token":"1000","min_liquidity":"0"}}'  --amount "100uconst" --from Coco --node "https://rpc.constantine-1.archway.tech:443/" --chain-id constantine-1
+```
+
+## Withdraw Liquidity
+This removes liquidity from the pool and returns it to the owner. Current liquidity owner ship can be seen with the balance query below. min_native and min_token are used to ensure the pool reserves do no unexpectedly change. Set both values to 1 if you want to guarantee the message is executed.
+```
+archwayd tx wasm execute archway1unyuj8qnmygvzuex3dwmg9yzt9alhvye2canzt '{"remove_liquidity":{"amount": "2", "min_native":"1","min_token":"1"}}' --from Coco --node "https://rpc.constantine-1.archway.tech:443/" --chain-id constantine-1
 ```
 
 ## Creating a new repo from template
