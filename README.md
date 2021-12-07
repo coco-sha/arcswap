@@ -1,15 +1,13 @@
 # Arcswap
 
-This contract is an automatic market maker (AMM) heavily inspired by Uniswap v1 for the cosmwasm smart contract engine.
-
-This project is currently in beta and is unaudited so please use at your own risk.
+Uniswap-inspired automated market-maker (AMM) protocol powered by Smart Contracts on the Archway blockchain.
 
 This contract allows you to swap native cosmos coins for cw20 tokens. Liquidity providers can add liquidity to the market and receive a 0.03% fee on every transaction.
 
 # Deployments
 
-- uco token: `archway1zwv6feuzhy6a9wekh96cd57lsarmqlwxn054te`
-- uco/uconst pair pool contract: `archway1unyuj8qnmygvzuex3dwmg9yzt9alhvye2canzt`
+- uco token: `archway14nurau9scuqhr3sczktx63sr8kdpvwh0zynv63`
+- uco/uconst pair pool contract: `archway1upvys78p4whku20c0addqurdt65y3l02ufh8wa`
 
 # Usage
 
