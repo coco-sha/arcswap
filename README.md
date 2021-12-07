@@ -40,6 +40,13 @@ This removes liquidity from the pool and returns it to the owner. Current liquid
 archwayd tx wasm execute archway1unyuj8qnmygvzuex3dwmg9yzt9alhvye2canzt '{"remove_liquidity":{"amount": "2", "min_native":"1","min_token":"1"}}' --from Coco --node "https://rpc.constantine-1.archway.tech:443/" --chain-id constantine-1
 ```
 
+## Roadmap
+- Create contract factory: tracks all created pools
+- Router contracts: Best route to  make a swap
+- TWAP: time weighted average price contracts
+- Enhance UI
+- Launch on mainnet
+
 ## Creating a new repo from template
 
 Assuming you have a recent version of rust and cargo (v1.51.0+) installed
