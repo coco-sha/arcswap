@@ -2,7 +2,7 @@
 
 Uniswap-inspired automated market-maker (AMM) protocol powered by Smart Contracts on the Archway blockchain.
 
-This contract allows you to swap native cosmos coins for cw20 tokens. Liquidity providers can add liquidity to the market and receive a 0.03% fee on every transaction.
+This contract allows you to swap native archway coins for cw20 tokens. Liquidity providers can add liquidity to the market and receive a 0.03% fee on every transaction.
 
 # Deployments
 
